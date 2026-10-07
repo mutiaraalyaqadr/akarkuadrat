@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benar atau Salah - Akar Kuadrat</title>
+
+    <style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #fce4ec, #e3f2fd);
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container {
+    width: 95%;
+    max-width: 1000px;
+
+    background: white;
+
+    border-radius: 25px;
+
+    padding: 40px;
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+
+    text-align: center;
+
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================
+   JUDUL
+========================= */
+
+h1 {
+    font-size: 42px;
+
+    color: #ff6f91;
+
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+
+    font-size: 18px;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================
+   BUTTON UMUM
+========================= */
+
+button {
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   BUTTON MULAI & MAIN LAGI
+========================= */
+
+.start-button,
+.restart-button {
+    border: none;
+
+    background: #ff8fab;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    padding: 15px 35px;
+
+    border-radius: 15px;
+
+    transition: 0.2s;
+}
+
+.start-button:hover,
+.restart-button:hover {
+    transform: translateY(-3px);
+
+    background: #ff7096;
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+.info {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 30px;
+}
+
+.info-box {
+    flex: 1;
+
+    background: #f7f7f7;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+.info-box span {
+    display: block;
+
+    font-size: 30px;
+
+    color: #ff6f91;
+
+    margin-top: 5px;
+}
+
+
+/* =========================
+   QUESTION
+========================= */
+
+.question-box {
+    min-height: 140px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    margin-bottom: 25px;
+}
+
+.question {
+    font-size: 60px;
+
+    font-weight: bold;
+
+    color: #333;
+
+    transform: translateX(-120%);
+
+    opacity: 0;
+}
+
+.question.masuk {
+    animation:
+        masukDariKiri
+        0.8s
+        cubic-bezier(0.22, 1, 0.36, 1)
+        forwards;
+}
+
+@keyframes masukDariKiri {
+
+    0% {
+        transform: translateX(-120%);
+
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================
+   PILIHAN JAWABAN
+========================= */
+
+.choices {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+
+    margin-top: 25px;
+}
+
+
+/* KOTAK JAWABAN DIBESARKAN */
+
+.choice {
+    border: none;
+
+    border-radius: 20px;
+
+    padding: 32px 10px;
+
+    min-height: 100px;
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+    color: #444;
+
+    transition: 0.2s;
+
+    box-shadow:
+        0 5px 10px
+        rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================
+   WARNA KOTAK
+========================= */
+
+.choice:nth-child(1) {
+    background: #ffd6e7;
+}
+
+.choice:nth-child(2) {
+    background: #d7f3ff;
+}
+
+.choice:nth-child(3) {
+    background: #fff0b8;
+}
+
+.choice:nth-child(4) {
+    background: #d9f7d9;
+}
+
+.choice:nth-child(5) {
+    background: #e4d7ff;
+}
+
+.choice:nth-child(6) {
+    background: #ffdcb8;
+}
+
+.choice:nth-child(7) {
+    background: #cfe7ff;
+}
+
+.choice:nth-child(8) {
+    background: #ffd1d1;
+}
+
+
+/* =========================
+   HOVER KOTAK
+========================= */
+
+.choice:hover:not(:disabled) {
+    transform:
+        translateY(-5px)
+        scale(1.03);
+
+    box-shadow:
+        0 8px 15px
+        rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================
+   KOTAK DISABLED
+========================= */
+
+.choice:disabled {
+    cursor: default;
+}
+
+
+/* =========================
+   JAWABAN BENAR
+========================= */
+
+.choice.correct {
+    background: #8ee0a5 !important;
+
+    color: #145c2a;
+}
+
+
+/* =========================
+   JAWABAN SALAH
+========================= */
+
+.choice.wrong {
+    background: #ff9c9c !important;
+
+    color: #7a1515;
+
+    animation: shake 0.3s;
+}
+
+
+/* =========================
+   ANIMASI SALAH
+========================= */
+
+@keyframes shake {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-7px);
+    }
+
+    50% {
+        transform: translateX(7px);
+    }
+
+    75% {
+        transform: translateX(-7px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+
+/* =========================
+   FEEDBACK
+========================= */
+
+.feedback {
+    min-height: 45px;
+
+    margin-top: 25px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+}
+
+.correct-text {
+    color: #28a745;
+}
+
+.wrong-text {
+    color: #e53935;
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+.result-screen h2 {
+    font-size: 40px;
+
+    color: #ff6f91;
+}
+
+.final-score {
+    font-size: 60px;
+
+    font-weight: bold;
+
+    color: #ff6f91;
+
+    margin: 20px 0;
+}
+
+.result-detail {
+    font-size: 21px;
+
+    line-height: 1.8;
+
+    color: #555;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   RESPONSIVE HP
+========================= */
+
+@media (max-width: 650px) {
+
+    .game-container {
+        width: 95%;
+
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    .info {
+        flex-direction: column;
+    }
+
+    .choices {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 12px;
+    }
+
+    .choice {
+        min-height: 85px;
+
+        padding: 25px 8px;
+
+        font-size: 28px;
+    }
+
+    .question {
+        font-size: 45px;
+    }
+
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- SUARA -->
+    <audio id="backgroundMusic" src="backsound.mp3" preload="auto" loop></audio>
+    <audio id="correctSound" src="benar.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="salah.mp3" preload="auto"></audio>
+
+
+    <div class="game-container">
+
+        <!-- START SCREEN -->
+        <div id="startScreen">
+
+            <h1>Benar atau Salah</h1>
+
+            <div class="subtitle">
+                Akar Kuadrat
+            </div>
+
+            <p>
+                Jawab sebanyak mungkin sebelum waktu habis!
+            </p>
+
+            <button class="start-button" onclick="startGame()">
+                Mulai Permainan
+            </button>
+
+        </div>
+
+
+        <!-- GAME SCREEN -->
+        <div id="gameScreen" class="hidden">
+
+            <div class="info">
+
+                <div class="info-box">
+                    Skor
+                    <span id="score">0</span>
+                </div>
+
+                <div class="info-box">
+                    Benar
+                    <span id="correct">0</span>
+                </div>
+
+                <div class="info-box">
+                    Waktu
+                    <span id="timer">300</span>
+                </div>
+
+            </div>
+
+
+            <div class="question-box">
+
+                <div id="question" class="question">
+                    √49
+                </div>
+
+            </div>
+
+
+            <div id="choices" class="choices"></div>
+
+
+            <div id="feedback" class="feedback"></div>
+
+        </div>
+
+
+        <!-- RESULT SCREEN -->
+        <div id="resultScreen" class="result-screen hidden">
+
+            <h2>Waktu Habis!</h2>
+
+            <p>Skor kamu:</p>
+
+            <div id="finalScore" class="final-score">
+                0
+            </div>
+
+            <div class="result-detail">
+
+                <div>
+                    ✓ Benar:
+                    <strong id="finalCorrect">0</strong>
+                </div>
+
+                <div>
+                    ✗ Salah:
+                    <strong id="finalWrong">0</strong>
+                </div>
+
+                <div>
+                    Total soal:
+                    <strong id="finalTotal">15</strong>
+                </div>
+
+            </div>
+
+            <button class="restart-button" onclick="startGame()">
+                Main Lagi
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================
+           DATA SOAL
+        ========================= */
+
+        const questions = [
+
+            { number: 49, answer: 7 },
+            { number: 64, answer: 8 },
+            { number: 81, answer: 9 },
+            { number: 100, answer: 10 },
+            { number: 25, answer: 5 },
+            { number: 36, answer: 6 },
+            { number: 100, answer: 10 },
+            { number: 4, answer: 2 },
+            { number: 16, answer: 4 },
+            { number: 9, answer: 3 },
+            { number: 25, answer: 5 },
+            { number: 9, answer: 3 },
+            { number: 36, answer: 6 },
+            { number: 49, answer: 7 },
+            { number: 36, answer: 6 }
+
+        ];
+
+
+        /* =========================
+           VARIABEL
+        ========================= */
+
+        let score = 0;
+        let correct = 0;
+        let wrong = 0;
+        let total = 0;
+
+        let timeLeft = 300;
+
+        let timerInterval;
+
+        let currentQuestion;
+
+
+        /* =========================
+           MULAI GAME
+        ========================= */
+
+        function startGame() {
+
+            score = 0;
+            correct = 0;
+            wrong = 0;
+            total = 0;
+
+            timeLeft = 300;
+
+
+            document.getElementById("score").textContent = score;
+            document.getElementById("correct").textContent = correct;
+            document.getElementById("timer").textContent = timeLeft;
+
+
+            document.getElementById("startScreen")
+                .classList.add("hidden");
+
+            document.getElementById("resultScreen")
+                .classList.add("hidden");
+
+            document.getElementById("gameScreen")
+                .classList.remove("hidden");
+
+
+            /* MULAI BACKSOUND */
+
+            const backgroundMusic =
+                document.getElementById("backgroundMusic");
+
+            backgroundMusic.currentTime = 0;
+
+            backgroundMusic.volume = 0.3;
+
+            backgroundMusic.play().catch(() => {
+                console.log("Backsound belum dapat diputar.");
+            });
+
+
+            clearInterval(timerInterval);
+
+            timerInterval =
+                setInterval(updateTimer, 1000);
+
+
+            generateQuestion();
+
+        }
+
+
+        /* =========================
+           TIMER
+        ========================= */
+
+        function updateTimer() {
+
+            timeLeft--;
+
+            document.getElementById("timer")
+                .textContent = timeLeft;
+
+
+            if (timeLeft <= 0) {
+
+                clearInterval(timerInterval);
+
+                endGame();
+
+            }
+
+        }
+
+
+        /* =========================
+           BUAT SOAL
+        ========================= */
+
+        function generateQuestion() {
+
+            document.getElementById("feedback")
+                .textContent = "";
+
+            document.getElementById("feedback")
+                .className = "feedback";
+
+
+            currentQuestion =
+                questions[
+                    Math.floor(
+                        Math.random() * questions.length
+                    )
+                ];
+
+
+            const questionElement =
+                document.getElementById("question");
+
+
+            /* ULANG ANIMASI */
+
+            questionElement.classList.remove("masuk");
+
+            void questionElement.offsetWidth;
+
+
+            questionElement.textContent =
+                "√" + currentQuestion.number;
+
+
+            questionElement.classList.add("masuk");
+
+
+            generateChoices();
+
+        }
+
+
+        /* =========================
+           BUAT PILIHAN
+        ========================= */
+
+        function generateChoices() {
+
+            const choicesContainer =
+                document.getElementById("choices");
+
+
+            choicesContainer.innerHTML = "";
+
+
+            let choices = [];
+
+            choices.push(currentQuestion.answer);
+
+
+            /* ANGKA RANDOM */
+
+            while (choices.length < 8) {
+
+                const randomNumber =
+                    Math.floor(Math.random() * 20) + 1;
+
+
+                if (!choices.includes(randomNumber)) {
+
+                    choices.push(randomNumber);
+
+                }
+
+            }
+
+
+            /* ACAK */
+
+            choices.sort(() => Math.random() - 0.5);
+
+
+            /* BUAT BUTTON */
+
+            choices.forEach(number => {
+
+                const button =
+                    document.createElement("button");
+
+                button.className = "choice";
+
+                button.textContent = number;
+
+
+                button.onclick = function() {
+
+                    checkAnswer(number, button);
+
+                };
+
+
+                choicesContainer.appendChild(button);
+
+            });
+
+        }
+
+
+        /* =========================
+           CEK JAWABAN
+        ========================= */
+
+        function checkAnswer(selectedAnswer, button) {
+
+
+            /* =====================
+               JAWABAN BENAR
+            ===================== */
+
+            if (
+                selectedAnswer ===
+                currentQuestion.answer
+            ) {
+
+                correct++;
+
+                score += 10;
+
+                total++;
+
+
+                button.classList.add("correct");
+
+
+                /* SOUND BENAR */
+
+                const correctSound =
+                    document.getElementById("correctSound");
+
+                correctSound.currentTime = 0;
+
+                correctSound.play().catch(() => {
+                    console.log("Sound benar tidak dapat diputar.");
+                });
+
+
+                /* FEEDBACK */
+
+                const feedback =
+                    document.getElementById("feedback");
+
+                feedback.textContent =
+                    "✓ Benar!";
+
+                feedback.className =
+                    "feedback correct-text";
+
+
+                /* UPDATE SCORE */
+
+                document.getElementById("score")
+                    .textContent = score;
+
+                document.getElementById("correct")
+                    .textContent = correct;
+
+
+                /* MATIKAN SEMUA BUTTON */
+
+                const allButtons =
+                    document.querySelectorAll(".choice");
+
+                allButtons.forEach(btn => {
+
+                    btn.disabled = true;
+
+                });
+
+
+                /* SOAL BERIKUTNYA */
+
+                setTimeout(() => {
+
+                    if (timeLeft > 0) {
+
+                        generateQuestion();
+
+                    }
+
+                }, 500);
+
+            }
+
+
+            /* =====================
+               JAWABAN SALAH
+            ===================== */
+
+            else {
+
+                wrong++;
+
+
+                button.classList.add("wrong");
+
+                button.disabled = true;
+
+
+                /* SOUND SALAH */
+
+                const wrongSound =
+                    document.getElementById("wrongSound");
+
+                wrongSound.currentTime = 0;
+
+                wrongSound.play().catch(() => {
+                    console.log("Sound salah tidak dapat diputar.");
+                });
+
+
+                /* FEEDBACK */
+
+                const feedback =
+                    document.getElementById("feedback");
+
+                feedback.textContent =
+                    "✗ Salah! Coba lagi.";
+
+                feedback.className =
+                    "feedback wrong-text";
+
+            }
+
+        }
+
+
+        /* =========================
+           SELESAI
+        ========================= */
+
+        function endGame() {
+
+            clearInterval(timerInterval);
+
+
+            /* MATIKAN BACKSOUND */
+
+            const backgroundMusic =
+                document.getElementById("backgroundMusic");
+
+            backgroundMusic.pause();
+
+            backgroundMusic.currentTime = 0;
+
+
+            /* TAMPILKAN HASIL */
+
+            document.getElementById("gameScreen")
+                .classList.add("hidden");
+
+            document.getElementById("resultScreen")
+                .classList.remove("hidden");
+
+
+            document.getElementById("finalScore")
+                .textContent = score;
+
+            document.getElementById("finalCorrect")
+                .textContent = correct;
+
+            document.getElementById("finalWrong")
+                .textContent = wrong;
+
+            document.getElementById("finalTotal")
+    .textContent = questions.length;
+
+        }
+
+    </script>
+
+</body>
+</html>
